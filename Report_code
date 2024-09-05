@@ -1,0 +1,1041 @@
+\documentclass[a4paper]{article}
+\usepackage{vntex}
+\usepackage{a4wide,amssymb,epsfig,latexsym,array,hhline,fancyhdr}
+\usepackage[normalem]{ulem}
+\usepackage[makeroom]{cancel}
+\usepackage{lastpage}
+\usepackage[lined,boxed,commentsnumbered]{algorithm2e}
+\usepackage{color}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{rotating}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage[unicode]{hyperref}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{pgf-pie}
+\usepackage{pgfplots}
+\usepackage{natbib}
+\usepackage{fancyhdr}
+
+
+
+% Định nghĩa màu sắc và kiểu chữ cho từ khóa, chú thích và chuỗi trong C++
+\definecolor{cpp_keyword}{RGB}{0,0,255} 
+\definecolor{cpp_comment}{RGB}{34,139,34} 
+\definecolor{cpp_string}{RGB}{160,32,240} 
+\definecolor{cpp_background}{RGB}{240,240,240} 
+
+% Định nghĩa môi trường cho mã C++ với màu sắc và kiểu chữ đã định nghĩa
+\lstdefinestyle{cppstyle}{
+    language=C++,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{cpp_keyword},
+    commentstyle=\color{cpp_comment},
+    stringstyle=\color{cpp_string},
+    backgroundcolor=\color{cpp_background},
+    frame=lines,
+    breaklines=true,
+    numbers=left,
+    numbersep=5pt,
+    numberstyle=\tiny\color{gray},
+    columns=fullflexible,
+    showstringspaces=false
+}
+\hypersetup{
+    urlcolor=blue,
+    linkcolor=black,
+    citecolor=black,
+    colorlinks=true
+}
+
+\usepackage{geometry}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+\geometry{
+    a4paper,
+    total={170mm,257mm},
+    left=20mm,
+    top=20mm,
+}
+\usepackage{atbegshi}
+\AtBeginShipout{\AtBeginShipoutAddToBox{    
+    \begin{tikzpicture}[remember picture, overlay]
+        \draw[line width=2pt]
+            ($ (current page.north west) + (0.2 cm,- 0.2cm) $)
+            rectangle
+            ($ (current page.south east) + (-0.2cm,0.2cm) $);
+    \end{tikzpicture}%
+}}
+\fancyhead{}
+\fancyhead[L]{
+ \begin{tabular}{rl}
+    \begin{picture}(25,15)(0,0)
+    \put(0,-8){\includegraphics[width=7.5mm, height=7.5mm]{Images/hcmut.png}}
+   \end{picture}&
+	\begin{tabular}{l}
+		\textbf{\bf \ttfamily \textcolor{black} {Trường Đại Học Bách Khoa Tp.Hồ Chí Minh}}\\
+		\textbf{\bf \ttfamily \textcolor{black} {Khoa Khoa Học \& Kỹ Thuật Máy Tính}}
+	\end{tabular} 	
+ \end{tabular}
+}
+
+
+% Fancyhdr setup
+\fancyhf{} % Clear all header and footer fields
+\fancyfoot[L]{\scriptsize \ttfamily Báo cáo bài tập lớn môn Cấu Trúc Rời Rạc}
+\fancyfoot[R]{\scriptsize \ttfamily Trang \thepage/\pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0.3pt}
+\pagestyle{fancy}
+
+% Section numbering depth
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{3}
+
+% Subsubsubsection definition
+\makeatletter
+\newcounter{subsubsubsection}[subsubsection]
+\renewcommand\thesubsubsubsection{\thesubsubsection.\@alph\c@subsubsubsection}
+\newcommand\subsubsubsection{\@startsection{subsubsubsection}{4}{\z@}%
+                                    {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                    {1.5ex \@plus .2ex}%
+                                  {\normalfont\normalsize\bfseries}}
+\makeatother
+\everymath{\color{blue}}
+\begin{document}
+\begin{titlepage}
+\begin{center}
+ĐẠI HỌC QUỐC GIA THÀNH PHỐ HỒ CHÍ MINH \\
+TRƯỜNG ĐẠI HỌC BÁCH KHOA \\
+KHOA KHOA HỌC \& KỸ THUẬT MÁY TÍNH 
+\end{center}
+\vspace{1cm}
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=5cm]{Images/hcmut.png}
+\end{center}
+\end{figure}
+\vspace{1cm}
+
+
+\begin{center}
+\begin{tabular}{c}
+\multicolumn{1}{c}{\textbf{{\Large \textcolor{black}{Cấu Trúc Rời Rạc Cho Khoa Học Máy Tính}}}}\\
+~~\\
+\arrayrulecolor{black}\hline
+\\
+
+\textbf{\large \textcolor{black}{Đề tài: Áp dụng phương pháp Nhánh và Cận (Branch and Bound)}} \\
+\textbf{\large \textcolor{black}{ và Đệ Quy(Recursion) trong bài toán TSP }}
+\\
+\arrayrulecolor{black}\hline
+\end{tabular}
+\end{center}
+
+\vspace{1.5cm}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{p{5cm} l} % Đặt chiều rộng của cột đầu tiên là 5cm
+\textcolor{black}{GVHD:} & \textcolor{black}{Mai Xuân Toàn} \\
+\textcolor{black}{Sinh Viên thực hiện:} & \textcolor{black}{Ngô Trương Phú} \\
+\textcolor{black}{MSSV:} & \textcolor{black}{2352915} \\
+\end{tabular}
+\end{table}
+% Define code listing style
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{white},   
+    commentstyle=\color{green},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{purple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+% Set code listing style
+\lstset{style=mystyle}
+\vspace{1.5cm}
+\begin{center}
+{\footnotesize Thành phố Hồ Chí Minh, Tháng 06/2024}
+\end{center}
+\end{titlepage}
+\newpage
+\begin{center}
+    {\LARGE\bf NHẬN XÉT CỦA GVHD}
+\end{center}
+\newpage
+\tableofcontents
+\newpage
+\section{Giới thiệu:}\label{control}
+
+\subsection{Bài toán Traveling Salesman Problem: }\label{control}
+Mô tả bài toán Traveling Salesman Problem(TSP):\cite{TravelingSalesman}
+ \begin{itemize}
+    \item  Bài toán Người du lịch, tìm đường đi ngắn nhất cho người thương nhân (salesman), hay còn gọi là người chào hàng xuất phát từ một thành phố, đi qua lần lượt tất cả các thành phố duy nhất một lần và quay về thành phố ban đầu với chi phí rẻ nhất, được phát biểu vào thế kỷ 17 bởi hai nhà toán học vương quốc Anh là Sir William Rowan Hamilton và Thomas Penyngton Kirkman, và được ghi trong cuốn giáo trình Lý thuyết đồ thị nổi tiếng của Oxford. Nó nhanh chóng trở thành bài toán khó thách thức toàn thế giới bởi độ phức tạp thuật toán tăng theo hàm số mũ (trong chuyên ngành thuật toán người ta còn gọi chúng là những bài toán NP-khó). Người ta bắt đầu thử và công bố các kết quả giải bài toán này trên máy tính từ năm 1954 (49 đỉnh), cho đến năm 2004 bài toán giải được với số đỉnh lên tới 24.978, và dự báo sẽ còn tiếp tục tăng cao nữa. Bài toán có thể phát biểu dưới ngôn ngữ đồ thị như sau. Cho đồ thị n đỉnh đầy đủ và có trọng số G=(V-tập đỉnh,E-tập cạnh) có hoặc vô hướng. Tìm chu trình Halmilton có tổng trọng số là nhỏ nhất.
+     \end{itemize}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.3\linewidth]{Images/tsp.png}
+    \caption{Hình ảnh minh họa về bài toán TSP}
+    \label{fig:tsp}
+\end{figure}
+
+\subsection{Phương pháp Nhánh và Cận (Branch and Bound) và Đệ Quy(Recursion): }\label{control}
+Giải thuật sẽ được sử dụng cho bài toán Traveling Salesman Problem là Phương pháp Nhánh và Cận (Branch and Bound) và Đệ Quy(Recursion). Ta sẽ đi tìm hiểu về các phương pháp này.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.3\linewidth]{Images/Branch-and-bound-tree.png}
+    \caption{Hình ảnh minh họa về phương pháp nhánh và cận}
+    \label{fig:tsp}
+\end{figure}
+\newpage
+\begin{itemize}
+\subsection*{Phương pháp Branch and Bound trong TSP}
+    \item \textbf{Branch and Bound} là một phương pháp tìm kiếm có hệ thống để giải quyết các bài toán tối ưu hóa. Nó hoạt động bằng cách chia bài toán lớn thành các bài toán con nhỏ hơn (branching) và sau đó sử dụng các ước lượng (bounding) để loại bỏ các nhánh không cần thiết. \cite{beale1979branch}
+
+    \item \textbf{Các bước cơ bản của Branch and Bound trong TSP:}
+
+    \begin{itemize}
+        \item \textbf{Branching:} Chia bài toán thành các nhánh con bằng cách chọn một đỉnh (thành phố) và mở rộng từ đỉnh đó tới các đỉnh kề.
+        \item \textbf{Bounding:} Tính toán một ước lượng chi phí thấp nhất (lower bound) cho mỗi nhánh con để xác định xem nhánh nào có thể dẫn đến lời giải tốt hơn.
+        \item \textbf{Pruning:} Loại bỏ các nhánh có chi phí ước lượng cao hơn hoặc bằng chi phí của lời giải hiện tại (nếu có).
+        \item \textbf{Exploring:} Tiếp tục mở rộng và đánh giá các nhánh còn lại cho đến khi tìm được lời giải tốt nhất.
+    \end{itemize}
+
+\end{itemize}
+\begin{itemize}
+\subsection*{Sử dụng đệ quy trong TSP}
+    \item \textbf{Đệ quy:} Sử dụng đệ quy để thực hiện việc tạo ra các nhánh con và duyệt qua các lựa chọn cho lời giải. Đệ quy được sử dụng trong hàm gọi hàm dùng Branch và Bound để duyệt qua các đỉnh và xây dựng cây tìm kiếm.Cụ thể hàm này được gọi đệ quy để tạo ra các nhánh con của cây tìm kiếm khi đang xây dựng và duyệt qua các lựa chọn cho lời giải. Mỗi lần gọi đệ quy, hàm sẽ thêm một thành phố mới vào lộ trình hiện tại và tiếp tục duyệt qua các thành phố tiếp theo có thể thăm được. Điều này giúp xây dựng cây tìm kiếm để tìm kiếm lời giải tối ưu cho bài toán TSP.
+\end{itemize}
+
+ \subsection{Mã giả của Phương pháp Nhánh và Cận (Branch and Bound) và Đệ Quy(Recursion) }\label{control}
+ \textbf{Khởi tạo:}
+\begin{itemize}
+  \item Khởi tạo các biến $minCost$ và $bestPath$ với giá trị vô cùng lớn.
+  \item Khởi tạo $currentPath$ với kích thước bằng số lượng đỉnh của đồ thị.
+  \item Khởi tạo $visited$ để theo dõi các đỉnh đã được thăm.
+  \item Tính toán $bound$ ban đầu bằng hàm \texttt{calculateBound}.
+\end{itemize}
+\label{control}
+\textbf{Hàm branchAndBound}($currentCost, level, bound$):
+\begin{enumerate}
+  \item Nếu $level = numVertices$:
+  \begin{itemize}
+    \item Kiểm tra xem đỉnh cuối cùng có kết nối với đỉnh đầu tiên không.
+    \item Nếu có, tính toán $totalCost$ và so sánh với $minCost$, cập nhật nếu cần.
+  \end{itemize}
+  \item Ngược lại:
+  \begin{itemize}
+    \item Duyệt qua tất cả các đỉnh chưa thăm:
+    \begin{enumerate}
+      \item Tính toán cost của việc thăm đỉnh mới và cập nhật $currentCost$.
+      \item Tính toán lower bound cho trạng thái mới.
+      \item Nếu lower bound cộng với $currentCost$ nhỏ hơn $minCost$:
+      \begin{itemize}
+        \item Thêm đỉnh mới vào $currentPath$ và đánh dấu đỉnh đã thăm.
+        \item Gọi đệ quy \texttt{branchAndBound} với $level$ tăng lên 1, $currentCost$ mới, và $bound$ mới.
+        \item Trả lại $currentCost$ và $bound$ về trạng thái trước đó sau khi kết thúc đệ quy.
+        \item Bỏ đánh dấu cho đỉnh đã thăm.
+      \end{itemize}
+    \end{enumerate}
+  \end{itemize}
+\end{enumerate}
+
+\newpage
+ 
+\section{Code xử lí bài toán:}\label{control}
+\subsection{Code TSP: }\label{control}
+
+
+\subsection*{C++ Code with Comments}
+
+\begin{lstlisting}[language=C++, caption={Traveling Salesman Problem Solver - C++ Code with Comments}, style=cppstyle]
+#include <iostream>
+#include <vector>
+#include <climits>
+#include <algorithm>
+#include <string>
+#include <sstream>
+
+using namespace std;
+// Class for solving the Traveling Salesman Problem using Branch and Bound
+class TSP {
+    int graph[20][20];
+    int numVertices;
+    int minCost;
+    vector<int> bestPath;
+    vector<int> currentPath;
+    vector<bool> visited;
+
+public:
+    // Constructor to initialize the TSP solver
+    TSP(int g[20][20], int n) {
+        // Copy the graph and initialize variables
+        copy(&g[0][0], &g[0][0] + 20 * 20, &graph[0][0]);
+        numVertices = n;
+        minCost = INF;
+        bestPath.resize(n);
+        currentPath.resize(n);
+        visited.resize(n, false);
+    }
+
+    // Function to calculate the lower bound on the cost of a path
+    int calculateBound(int level) {
+        int bound = 0;
+        for (int i = 0; i < numVertices; ++i) {
+            if (!visited[i]) {
+                int minEdge1 = INF, minEdge2 = INF;
+                for (int j = 0; j < numVertices; ++j) {
+                    if (i != j) {
+                        if (graph[i][j] < minEdge1) {
+                            minEdge2 = minEdge1;
+                            minEdge1 = graph[i][j];
+                        } else if (graph[i][j] < minEdge2) {
+                            minEdge2 = graph[i][j];
+                        }
+                    }
+                }
+                bound += (minEdge1 + minEdge2) / 2;
+            }
+        }
+        return bound;
+    }
+
+    // Function to find the smallest edge cost from vertex i
+    int minEdgeCost(int i) {
+        int minCost = INF;
+        for (int j = 0; j < numVertices; ++j) {
+            if (i != j && graph[i][j] < minCost) {
+                minCost = graph[i][j];
+            }
+        }
+        return minCost;
+    }
+
+    // Function to find the second smallest edge cost from vertex i
+    int secondMinEdgeCost(int i) {
+        int firstMin = INF, secondMin = INF;
+        for (int j = 0; j < numVertices; ++j) {
+            if (i != j) {
+                if (graph[i][j] <= firstMin) {
+                    secondMin = firstMin;
+                    firstMin = graph[i][j];
+                } else if (graph[i][j] < secondMin) {
+                    secondMin = graph[i][j];
+                }
+            }
+        }
+        return secondMin;
+    }
+
+    // Recursive function to perform the Branch and Bound algorithm
+    void branchAndBound(int currentCost, int level, int bound) {
+        if (level == numVertices) {
+            if (graph[currentPath[level - 1]][currentPath[0]] != 0) {
+                int totalCost = currentCost + graph[currentPath[level - 1]][currentPath[0]];
+                if (totalCost < minCost) {
+                    minCost = totalCost;
+                    bestPath = currentPath;
+                }
+            }
+            return;
+        }
+
+        for (int i = 0; i < numVertices; ++i) {
+            if (!visited[i] && graph[currentPath[level - 1]][i] != 0) {
+                int tempBound = bound;
+                currentCost += graph[currentPath[level - 1]][i];
+                bound -= (minEdgeCost(currentPath[level - 1]) + secondMinEdgeCost(i)) / 2;
+
+                if (bound + currentCost < minCost) {
+                    currentPath[level] = i;
+                    visited[i] = true;
+                    branchAndBound(currentCost, level + 1, bound);
+                }
+
+                currentCost -= graph[currentPath[level - 1]][i];
+                bound = tempBound;
+                visited[i] = false;
+            }
+        }
+    }
+
+    // Function to solve the TSP
+    string solve(char startVertex) {
+        currentPath[0] = startVertex - 'A';
+        visited[startVertex - 'A'] = true;
+
+        int initialBound = calculateBound(1);
+        branchAndBound(0, 1, initialBound);
+
+        ostringstream result;
+        for (int i = 0; i < numVertices; ++i) {
+            result << char(bestPath[i] + 'A') << " ";
+        }
+        result << char(bestPath[0] + 'A');
+        return result.str();
+    }
+};
+
+// Wrapper function to solve the TSP
+string Traveling(int graph[20][20], int numVertices, char startVertex) {
+    TSP tsp(graph, numVertices);
+    return tsp.solve(startVertex);
+}
+\end{lstlisting}
+
+\subsection{Các thư viện sử dụng: }\label{control}
+
+\begin{lstlisting}[style=cppstyle]
+#include <iostream>
+#include <vector>
+#include <climits>
+#include <algorithm>
+#include <string>
+#include <sstream>
+\end{lstlisting}
+\begin{itemize}
+\item \texttt{Thư viện}:
+\begin{itemize}
+    \item \texttt{\#include <iostream>}: Thư viện nhập và xuất dữ liệu chuẩn của C++.
+    \item \texttt{\#include <vector>}: Thư viện cho việc sử dụng cấu trúc dữ liệu vector.
+    \item \texttt{\#include <climits>}: Thư viện chứa các hằng số và giới hạn liên quan đến kiểu dữ liệu nguyên của C++.
+    \item \texttt{\#include <algorithm>}: Thư viện chứa các thuật toán thường dùng trong C++, như sắp xếp và tìm kiếm.
+    \item \texttt{\#include <string>}: Thư viện cho việc sử dụng chuỗi ký tự trong C++.
+    \item \texttt{\#include <sstream>}: Thư viện cho việc xử lý chuỗi ký tự chứa dữ liệu số.
+\end{itemize}
+\end{itemize}
+
+\subsection{Giải thích từng hàm của code: }\label{control}
+\subsection*{Lớp \texttt{TSP}}
+Lớp \texttt{TSP} được thiết kế để:
+\begin{itemize}
+    \item Đại diện cho đồ thị của các thành phố và chi phí (hoặc khoảng cách) giữa chúng.
+    \item Sử dụng thuật toán Branch and Bound để tìm lộ trình tối ưu có chi phí thấp nhất đi qua tất cả các thành phố đúng một lần và trở về thành phố ban đầu.
+    \item Cung cấp các hàm thành viên để tính toán và quản lý chi phí, lộ trình, và trạng thái của các đỉnh đã thăm trong quá trình tìm kiếm.
+\end{itemize}
+
+\subsection*{Chi tiết của lớp \texttt{TSP}}\label{control}
+
+\subsection*{*Các biến thành viên}
+\begin{lstlisting}[style=cppstyle]
+int graph[20][20];
+int numVertices;
+int minCost;
+vector<int> bestPath;
+vector<int> currentPath;
+vector<bool> visited;
+\end{lstlisting}
+
+\begin{itemize}
+\item \textit{Cấu trúc và giải thích từng dòng mã}:
+\begin{itemize}
+\item \textbf{\texttt{graph[20][20]}}:
+\begin{itemize}
+\item Ma trận chi phí giữa các thành phố.
+\item \textit{Sử dụng}: Lưu trữ chi phí hoặc khoảng cách giữa mỗi cặp thành phố. Được sử dụng trong các tính toán chi phí và ràng buộc.
+\end{itemize}
+ \item \textbf{\texttt{numVertices}}: 
+    \begin{itemize}
+        \item Số lượng thành phố (đỉnh) trong đồ thị.
+        \item \textit{Sử dụng}: Xác định phạm vi của các vòng lặp và điều kiện trong các hàm tính toán.
+    \end{itemize}
+
+    \item \textbf{\texttt{minCost}}: 
+    \begin{itemize}
+        \item Chi phí nhỏ nhất tìm được cho đến thời điểm hiện tại.
+        \item \textit{Sử dụng}: Giữ giá trị chi phí của lộ trình tốt nhất đã tìm thấy. Giúp so sánh và cập nhật chi phí tối ưu trong quá trình tìm kiếm.
+    \end{itemize}
+
+    \item \textbf{\texttt{bestPath}}: 
+    \begin{itemize}
+        \item Lộ trình tốt nhất tìm được cho đến thời điểm hiện tại.
+        \item \textit{Sử dụng}: Lưu trữ thứ tự các thành phố trong lộ trình tối ưu có chi phí nhỏ nhất.
+    \end{itemize}
+
+    \item \textbf{\texttt{currentPath}}: 
+    \begin{itemize}
+        \item Lộ trình hiện tại đang được kiểm tra trong quá trình thực hiện thuật toán.
+        \item \textit{Sử dụng}: Giữ thứ tự các thành phố trong lộ trình hiện tại đang được đánh giá trong thuật toán Branch and Bound.
+    \end{itemize}
+
+    \item \textbf{\texttt{visited}}: 
+    \begin{itemize}
+        \item Theo dõi các đỉnh (thành phố) đã được thăm trong lộ trình hiện tại.
+        \item \textit{Sử dụng}: Giúp xác định xem một thành phố đã được thêm vào lộ trình hiện tại chưa, từ đó tránh việc thăm lại thành phố đó.
+    \end{itemize}
+\end{itemize}
+
+\item \textit{Cấu trúc và giải thích từng dòng mã}:
+\begin{itemize}
+\item \texttt{TSP(int g[20][20], int n)}: Constructor của lớp \texttt{TSP}. Nhận đối số là một ma trận hai chiều \texttt{g[20][20]} và một số nguyên \texttt{n}. Constructor này được sử dụng để khởi tạo một đối tượng \texttt{TSP} mới.
+\begin{itemize}
+\item \textit{Sử dụng}: Tạo một đối tượng \texttt{TSP} với ma trận chi phí \texttt{g} và số lượng đỉnh \texttt{n}.
+\end{itemize}
+\item \texttt{copy(\&g[0][0], \&g[0][0] + 20 * 20, \&graph[0][0])}:
+    \begin{itemize}
+        \item Sao chép nội dung của ma trận \texttt{g} vào ma trận \texttt{graph} của đối tượng \texttt{TSP}.
+        \item \textit{Sử dụng}: Đảm bảo rằng dữ liệu của ma trận \texttt{g} không bị thay đổi khi tạo ra một bản sao của nó trong \texttt{TSP}.
+    \end{itemize}
+    
+    \item \texttt{numVertices = n}:
+    \begin{itemize}
+        \item Gán giá trị của đối số \texttt{n} cho biến \texttt{numVertices}.
+        \item \textit{Sử dụng}: Xác định số lượng đỉnh trong đồ thị của đối tượng \texttt{TSP}.
+    \end{itemize}
+    
+    \item \texttt{minCost = INF}:
+    \begin{itemize}
+        \item Gán giá trị vô cùng lớn \texttt{INF} cho biến \texttt{minCost}.
+        \item \textit{Sử dụng}: Thiết lập một giá trị khởi tạo cao nhất cho chi phí tối thiểu, để có thể so sánh và cập nhật giá trị tốt nhất trong quá trình tìm kiếm.
+    \end{itemize}
+    
+    \item \texttt{bestPath.resize(n)}:
+    \begin{itemize}
+        \item Thay đổi kích thước của vector \texttt{bestPath} sao cho có \texttt{n} phần tử.
+        \item \textit{Sử dụng}: Chuẩn bị vector để lưu trữ lộ trình tốt nhất tìm được, với số lượng đỉnh \texttt{n}.
+    \end{itemize}
+    
+    \item \texttt{currentPath.resize(n)}:
+    \begin{itemize}
+        \item Thay đổi kích thước của vector \texttt{currentPath} sao cho có \texttt{n} phần tử.
+        \item \textit{Sử dụng}: Chuẩn bị vector để lưu trữ lộ trình hiện tại đang được đánh giá trong quá trình tìm kiếm, với số lượng đỉnh \texttt{n}.
+    \end{itemize}
+    
+    \item \texttt{visited.resize(n, false)}:
+    \begin{itemize}
+        \item Thay đổi kích thước của vector \texttt{visited} sao cho có \texttt{n} phần tử, và tất cả các phần tử được khởi tạo với giá trị \texttt{false}.
+        \item \textit{Sử dụng}: Khởi tạo vector để theo dõi xem mỗi đỉnh đã được thăm hay chưa trong quá trình tìm kiếm, với số lượng đỉnh \texttt{n}.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{Hàm \texttt{calculateBound(int level)}}
+\begin{lstlisting}[style=cppstyle]
+int calculateBound(int level) {
+    int bound = 0;
+    for (int i = 0; i < numVertices; ++i) {
+        if (!visited[i]) {
+            int minEdge1 = INF, minEdge2 = INF;
+            for (int j = 0; j < numVertices; ++j) {
+                if (i != j) {
+                    if (graph[i][j] < minEdge1) {
+                        minEdge2 = minEdge1;
+                        minEdge1 = graph[i][j];
+                    } else if (graph[i][j] < minEdge2) {
+                        minEdge2 = graph[i][j];
+                    }
+                }
+            }
+            bound += (minEdge1 + minEdge2) / 2;
+        }
+    }
+    return bound;
+}
+\end{lstlisting}
+
+
+\begin{itemize}
+\item \textit{Cấu trúc và giải thích từng dòng mã}:
+
+\texttt{Hàm \texttt{calculateBound(int level)}}:
+\begin{itemize}
+\item \textbf{Đầu vào}: Hàm này nhận vào một số nguyên \texttt{level}, đại diện cho mức độ trong cây tìm kiếm.
+\item \textbf{Đầu ra}: Hàm trả về một số nguyên là giá trị cận dưới của chi phí cho phần còn lại của đường đi từ mức độ hiện tại.
+\item \textbf{Cách thức hoạt động}:
+\begin{itemize}
+\item Khởi tạo biến \texttt{bound} với giá trị ban đầu là 0, đại diện cho cận dưới của chi phí hành trình.
+\item Duyệt qua tất cả các đỉnh trong đồ thị.
+\item Tại mỗi đỉnh chưa được thăm, tính toán hai cạnh nhỏ nhất (\texttt{minEdge1} và \texttt{minEdge2}) xuất phát từ đỉnh đó.
+\item Thêm giá trị trung bình của hai cạnh nhỏ nhất này vào \texttt{bound}.
+\item Trả về giá trị của \texttt{bound}.
+\end{itemize}
+\end{itemize}
+\end{itemize}
+
+\begin{itemize}
+\item \textbf{Giải thích từng dòng mã}:
+\begin{itemize}
+    \item \texttt{int bound = 0;} \\
+    Khởi tạo biến \texttt{bound} với giá trị ban đầu là 0. Biến này sẽ lưu tổng chi phí của hai cạnh nhỏ nhất xuất phát từ mỗi đỉnh chưa được thăm.
+
+    \item \texttt{for (int i = 0; i < numVertices; ++i)} \\
+    Duyệt qua tất cả các đỉnh trong đồ thị. Vòng lặp này sẽ kiểm tra từng đỉnh và tính toán giá trị cận dưới của chi phí cho phần còn lại của đường đi.
+
+    \item \texttt{if (!visited[i])} \\
+    Kiểm tra xem đỉnh hiện tại có được thăm chưa. Nếu không, thực hiện các bước bên trong.
+
+    \item \texttt{int minEdge1 = INF, minEdge2 = INF;} \\
+    Khởi tạo hai biến \texttt{minEdge1} và \texttt{minEdge2} với giá trị vô cùng lớn (\texttt{INF}). Hai biến này sẽ lưu trữ hai cạnh nhỏ nhất xuất phát từ đỉnh hiện tại.
+
+    \item \texttt{for (int j = 0; j < numVertices; ++j)} \\
+    Duyệt qua tất cả các đỉnh trong đồ thị để tìm hai cạnh nhỏ nhất.
+
+    \item \texttt{if (i != j)} \\
+    Đảm bảo không xét cạnh từ đỉnh đến chính nó.
+
+    \item \texttt{if (graph[i][j] < minEdge1)} \\
+    Kiểm tra nếu chi phí của cạnh từ đỉnh hiện tại đến đỉnh \texttt{j} nhỏ hơn \texttt{minEdge1}.
+
+    \item \texttt{minEdge2 = minEdge1;} \\
+    Cập nhật giá trị của \texttt{minEdge2} bằng giá trị của \texttt{minEdge1}.
+
+    \item \texttt{minEdge1 = graph[i][j];} \\
+    Cập nhật giá trị của \texttt{minEdge1} bằng chi phí của cạnh từ đỉnh hiện tại đến đỉnh \texttt{j}.
+
+    \item \texttt{else if (graph[i][j] < minEdge2)} \\
+    Nếu cạnh từ đỉnh hiện tại đến đỉnh \texttt{j} không nhỏ hơn \texttt{minEdge1} nhưng nhỏ hơn \texttt{minEdge2}, cập nhật giá trị của \texttt{minEdge2}.
+
+    \item \texttt{bound += (minEdge1 + minEdge2) / 2;} \\
+    Sau khi tìm được hai cạnh nhỏ nhất, tính tổng của chúng và chia đôi, sau đó thêm vào \texttt{bound}.
+
+    \item \texttt{return bound;} \\
+    Trả về giá trị của \texttt{bound}, đại diện cho cận dưới của chi phí cho phần
+    \end{itemize}
+    \end{itemize}
+    \item \textit{Sử dụng}:
+    \begin{itemize}
+        \item Tính toán một ước lượng chi phí thấp nhất (lower bound) cho lộ trình hiện tại.
+        \item Giúp giới hạn phạm vi tìm kiếm và loại bỏ các nhánh không cần thiết.
+    \end{itemize}
+    
+\end{itemize}
+
+\subsection*{Hàm \texttt{minEdgeCost(int i)} và \texttt{secondMinEdgeCost(int i)}}
+\begin{lstlisting}[style=cppstyle]
+int minEdgeCost(int i) {
+    int minCost = INF;
+    for (int j = 0; j < numVertices; ++j) {
+        if (i != j && graph[i][j] < minCost) {
+            minCost = graph[i][j];
+        }
+    }
+    return minCost;
+}
+
+int secondMinEdgeCost(int i) {
+    int firstMin = INF, secondMin = INF;
+    for (int j = 0; j < numVertices; ++j) {
+        if (i != j) {
+            if (graph[i][j] <= firstMin) {
+                secondMin = firstMin;
+                firstMin = graph[i][j];
+            } else if (graph[i][j] < secondMin) {
+                secondMin = graph[i][j];
+            }
+        }
+    }
+    return secondMin;
+}
+\end{lstlisting}
+
+\begin{itemize}
+\item \textit{Cấu Trúc và giải thích từng dòng mã}:
+
+\texttt{int minEdgeCost(int i)}:
+\begin{itemize}
+\item \textbf{Đầu vào}: Đầu vào của hàm là một số nguyên \texttt{i} đại diện cho một đỉnh trong đồ thị.
+\item \textbf{Đầu ra}: Hàm trả về giá trị nhỏ nhất của các cạnh kết nối từ đỉnh \texttt{i} đến các đỉnh khác trong đồ thị.
+\item \textbf{Cách thức hoạt động}:
+\begin{itemize}
+\item Khởi tạo biến \texttt{minCost} với giá trị vô cùng lớn \texttt{INF}.
+\item Duyệt qua tất cả các đỉnh trong đồ thị.
+\item Tại mỗi đỉnh, nếu đỉnh hiện tại không phải là \texttt{i} và giá trị của cạnh kết nối từ \texttt{i} đến đỉnh hiện tại nhỏ hơn \texttt{minCost}, ta cập nhật giá trị \texttt{minCost} bằng giá trị của cạnh đó.
+\item Trả về giá trị của \texttt{minCost} sau khi duyệt xong tất cả các đỉnh.
+\end{itemize}
+\end{itemize}
+\begin{itemize}
+    \item \textbf{Giải thích từng dòng mã:}
+    \begin{itemize}
+        \item \texttt{int minCost = INF;} \\
+        Khởi tạo biến \texttt{minCost} với giá trị vô cực (\texttt{INF}). Giá trị này đại diện cho chi phí cạnh nhỏ nhất và ban đầu được đặt là vô cực để có thể dễ dàng cập nhật khi tìm thấy cạnh có chi phí nhỏ hơn.
+
+        \item \texttt{for (int j = 0; j < numVertices; ++j)} \\
+        Duyệt qua tất cả các đỉnh trong đồ thị. Vòng lặp này sẽ kiểm tra chi phí cạnh nối từ đỉnh \texttt{i} đến các đỉnh khác.
+
+        \item \texttt{if (i != j && graph[i][j] < minCost)} \\
+        Kiểm tra nếu đỉnh \texttt{j} không phải là đỉnh \texttt{i} (để tránh so sánh với chính nó) và chi phí cạnh từ \texttt{i} đến \texttt{j} nhỏ hơn \texttt{minCost} hiện tại.
+
+        \item \texttt{minCost = graph[i][j];} \\
+        Nếu điều kiện trong câu lệnh \texttt{if} là đúng, cập nhật \texttt{minCost} với chi phí cạnh từ đỉnh \texttt{i} đến đỉnh \texttt{j}.
+
+        \item \texttt{return minCost;} \\
+        Trả về chi phí cạnh nhỏ nhất từ đỉnh \texttt{i} đến bất kỳ đỉnh nào khác trong đồ thị.
+    \end{itemize}
+\end{itemize}
+\texttt{int secondMinEdgeCost(int i)}:
+\begin{itemize}
+\item \textbf{Đầu vào}: Đầu vào của hàm là một số nguyên \texttt{i} đại diện cho một đỉnh trong đồ thị.
+\item \textbf{Đầu ra}: Hàm trả về giá trị thứ hai nhỏ nhất của các cạnh kết nối từ đỉnh \texttt{i} đến các đỉnh khác trong đồ thị.
+\item \textbf{Cách thức hoạt động}:
+\begin{itemize}
+\item Khởi tạo hai biến \texttt{firstMin} và \texttt{secondMin} với giá trị vô cùng lớn \texttt{INF}.
+\item Duyệt qua tất cả các đỉnh trong đồ thị.
+\item Tại mỗi đỉnh, nếu đỉnh hiện tại không phải là \texttt{i}:
+\begin{itemize}
+\item Nếu giá trị của cạnh kết nối từ \texttt{i} đến đỉnh hiện tại nhỏ hơn hoặc bằng giá trị của \texttt{firstMin}, ta cập nhật \texttt{secondMin} bằng giá trị của \texttt{firstMin} và \texttt{firstMin} bằng giá trị của cạnh đó.
+\item Nếu giá trị của cạnh kết nối từ \texttt{i} đến đỉnh hiện tại nhỏ hơn \texttt{secondMin} nhưng lớn hơn \texttt{firstMin}, ta cập nhật giá trị của \texttt{secondMin} bằng giá trị của cạnh đó.
+\end{itemize}
+\item Trả về giá trị của \texttt{secondMin} sau khi duyệt xong tất cả các đỉnh.
+\end{itemize}
+\end{itemize}
+
+\begin{itemize}
+    \item \textbf{Giải thích từng dòng mã:}
+    \begin{itemize}
+        \item \texttt{int firstMin = INF, secondMin = INF;} \\
+        Khởi tạo hai biến \texttt{firstMin} và \texttt{secondMin} với giá trị vô cực (\texttt{INF}). Biến \texttt{firstMin} sẽ lưu trữ chi phí cạnh nhỏ nhất và \texttt{secondMin} sẽ lưu trữ chi phí cạnh nhỏ thứ hai.
+
+        \item \texttt{for (int j = 0; j < numVertices; ++j)} \\
+        Duyệt qua tất cả các đỉnh trong đồ thị. Vòng lặp này sẽ kiểm tra chi phí các cạnh nối từ đỉnh \texttt{i} đến các đỉnh khác.
+
+        \item \texttt{if (i != j)} \\
+        Kiểm tra nếu đỉnh \texttt{j} không phải là đỉnh \texttt{i} để tránh so sánh với chính nó.
+
+        \item \texttt{if (graph[i][j] <= firstMin)} \\
+        Nếu chi phí cạnh từ \texttt{i} đến \texttt{j} nhỏ hơn hoặc bằng chi phí cạnh nhỏ nhất hiện tại (\texttt{firstMin}):
+
+        \item \texttt{secondMin = firstMin;} \\
+        Cập nhật \texttt{secondMin} bằng giá trị của \texttt{firstMin} trước khi cập nhật \texttt{firstMin}.
+
+        \item \texttt{firstMin = graph[i][j];} \\
+        Cập nhật \texttt{firstMin} với chi phí cạnh nhỏ hơn hoặc bằng mới tìm thấy.
+
+        \item \texttt{else if (graph[i][j] < secondMin)} \\
+        Nếu chi phí cạnh từ \texttt{i} đến \texttt{j} không nhỏ hơn hoặc bằng \texttt{firstMin}, nhưng nhỏ hơn \texttt{secondMin}:
+
+        \item \texttt{secondMin = graph[i][j];} \\
+        Cập nhật \texttt{secondMin} với chi phí cạnh nhỏ thứ hai mới tìm thấy.
+
+        \item \texttt{return secondMin;} \\
+        Trả về chi phí cạnh nhỏ thứ hai từ đỉnh \texttt{i} đến bất kỳ đỉnh nào khác trong đồ thị.
+    \end{itemize}
+\end{itemize}
+
+    \item \textit{Sử dụng}:
+    \begin{itemize}
+        \item Tính toán chi phí cạnh nhỏ nhất và chi phí cạnh nhỏ thứ hai xuất phát từ một đỉnh cụ thể.
+        \item Được sử dụng trong hàm \texttt{branchAndBound} để cập nhật ràng buộc (bound) của trạng thái hiện tại.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{Hàm \texttt{branchAndBound(int currentCost, int level, int bound)}}
+\begin{lstlisting}[style=cppstyle]
+void branchAndBound(int currentCost, int level, int bound) {
+    if (level == numVertices) {
+        if (graph[currentPath[level - 1]][currentPath[0]] != 0) {
+            int totalCost = currentCost + graph[currentPath[level - 1]][currentPath[0]];
+            if (totalCost < minCost) {
+                minCost = totalCost;
+                bestPath = currentPath;
+            }
+        }
+        return;
+    }
+
+    for (int i = 0; i < numVertices; ++i) {
+        if (!visited[i] && graph[currentPath[level - 1]][i] != 0) {
+            int tempBound = bound;
+            currentCost += graph[currentPath[level - 1]][i];
+            bound -= (minEdgeCost(currentPath[level - 1]) + secondMinEdgeCost(i)) / 2;
+
+            if (bound + currentCost < minCost) {
+                currentPath[level] = i;
+                visited[i] = true;
+                branchAndBound(currentCost, level + 1, bound);
+            }
+
+            currentCost -= graph[currentPath[level - 1]][i];
+            bound = tempBound;
+            visited[i] = false;
+        }
+    }
+}
+\end{lstlisting}
+\begin{itemize}
+\item \textit{Cấu Trúc và giải thích từng dòng mã}
+\begin{itemize}
+    \item Hàm \texttt{branchAndBound} được sử dụng để tìm đường đi ngắn nhất trong bài toán Người du lịch (TSP) bằng phương pháp Branch and Bound. Hàm này sử dụng đệ quy để thử tất cả các khả năng và cập nhật đường đi ngắn nhất hiện tại nếu tìm thấy đường đi có chi phí nhỏ hơn.
+\end{itemize}
+
+\begin{itemize}
+    \item \textbf{Đầu vào:}
+    \begin{itemize}
+        \item \texttt{currentCost}: Chi phí hiện tại của đường đi đang xét.
+        \item \texttt{level}: Mức độ hiện tại trong cây tìm kiếm, đại diện cho số lượng đỉnh đã được thăm.
+        \item \texttt{bound}: Cận dưới của chi phí cho phần còn lại của đường đi từ mức độ hiện tại.
+    \end{itemize}
+
+    \item \textbf{Cách thức hoạt động:}
+    \begin{itemize}
+        \item Nếu \texttt{level} bằng với số đỉnh trong đồ thị (\texttt{numVertices}):
+        \begin{itemize}
+            \item Kiểm tra xem đỉnh cuối cùng trong \texttt{currentPath} có kết nối trở lại đỉnh đầu tiên không.
+            \item Nếu có, tính tổng chi phí của đường đi (\texttt{totalCost}) bằng \texttt{currentCost} cộng với chi phí của cạnh kết nối đỉnh cuối cùng với đỉnh đầu tiên.
+            \item Nếu \texttt{totalCost} nhỏ hơn \texttt{minCost} hiện tại, cập nhật \texttt{minCost} và \texttt{bestPath}.
+        \end{itemize}
+        \item Nếu không, duyệt qua tất cả các đỉnh chưa được thăm:
+        \begin{itemize}
+            \item Nếu đỉnh hiện tại chưa được thăm và có kết nối từ đỉnh hiện tại trong \texttt{currentPath}:
+            \begin{itemize}
+                \item Lưu trữ tạm thời giá trị của \texttt{bound}.
+                \item Cập nhật \texttt{currentCost} bằng cách cộng với chi phí của cạnh từ đỉnh hiện tại đến đỉnh mới.
+                \item Cập nhật \texttt{bound} bằng cách trừ đi trung bình cộng của chi phí cạnh nhỏ nhất và chi phí cạnh nhỏ thứ hai của đỉnh hiện tại và đỉnh mới.
+                \item Nếu tổng của \texttt{bound} và \texttt{currentCost} nhỏ hơn \texttt{minCost} hiện tại:
+                \begin{itemize}
+                    \item Cập nhật \texttt{currentPath} tại \texttt{level} bằng đỉnh mới và đánh dấu đỉnh này là đã thăm.
+                    \item Gọi đệ quy \texttt{branchAndBound} với \texttt{currentCost} mới, \texttt{level} tăng thêm 1 và \texttt{bound} mới.
+                \end{itemize}
+                \item Sau khi đệ quy, khôi phục lại \texttt{currentCost} và \texttt{bound} về trạng thái trước đó.
+                \item Bỏ đánh dấu đỉnh mới là đã thăm.
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+\begin{itemize}
+    \item \textbf{Giải thích từng dòng mã:}
+    \begin{itemize}
+        \item \texttt{if (level == numVertices)} \\ 
+        Kiểm tra nếu tất cả các đỉnh đã được thăm.
+
+        \item \texttt{if (graph[currentPath[level - 1]][currentPath[0]] != 0)} \\ 
+        Kiểm tra xem có cạnh nối từ đỉnh cuối trong \texttt{currentPath} trở lại đỉnh đầu tiên hay không.
+
+        \item \texttt{int totalCost = currentCost + graph[currentPath[level - 1]][currentPath[0]];} \\ 
+        Tính tổng chi phí của đường đi hiện tại bằng cách cộng chi phí cạnh từ đỉnh cuối cùng đến đỉnh đầu tiên với \texttt{currentCost}.
+
+        \item \texttt{if (totalCost < minCost)} \\ 
+        Nếu tổng chi phí nhỏ hơn \texttt{minCost} hiện tại, cập nhật \texttt{minCost} và \texttt{bestPath}.
+
+        \item \texttt{minCost = totalCost;} \\ 
+        Cập nhật \texttt{minCost} với \texttt{totalCost} mới.
+
+        \item \texttt{bestPath = currentPath;} \\ 
+        Cập nhật \texttt{bestPath} với \texttt{currentPath} hiện tại.
+
+        \item \texttt{return;} \\ 
+        Kết thúc hàm khi đã hoàn thành một chu trình.
+
+        \item \texttt{for (int i = 0; i < numVertices; ++i)} \\ 
+        Duyệt qua tất cả các đỉnh để tìm đỉnh tiếp theo chưa được thăm.
+
+        \item \texttt{if (!visited[i] && graph[currentPath[level - 1]][i] != 0)} \\
+        Kiểm tra nếu đỉnh chưa được thăm và có cạnh nối từ đỉnh hiện tại trong \texttt{currentPath} đến đỉnh mới.
+
+        \item \texttt{int tempBound = bound;} \\ 
+        Lưu trữ tạm thời giá trị của \texttt{bound}.
+
+        \item \texttt{currentCost += graph[currentPath[level - 1]][i];} \\ 
+        Cập nhật \texttt{currentCost} bằng cách cộng với chi phí cạnh từ đỉnh hiện tại đến đỉnh mới.
+
+        \item \texttt{bound -= (minEdgeCost(currentPath[level - 1]) + secondMinEdgeCost(i)) / 2;} \\ 
+        Cập nhật \texttt{bound} bằng cách trừ đi trung bình cộng của chi phí cạnh nhỏ nhất và chi phí cạnh nhỏ thứ hai của đỉnh hiện tại và đỉnh mới.
+
+        \item \texttt{if (bound + currentCost < minCost)} \\ 
+        Nếu tổng của \texttt{bound} và \texttt{currentCost} nhỏ hơn \texttt{minCost} hiện tại, tiếp tục tìm kiếm.
+
+        \item \texttt{currentPath[level] = i;} \\ 
+        Cập nhật \texttt{currentPath} tại \texttt{level} bằng đỉnh mới.
+
+        \item \texttt{visited[i] = true;} \\ 
+        Đánh dấu đỉnh mới là đã thăm.
+
+        \item \texttt{branchAndBound(currentCost, level + 1, bound);} \\ 
+        Gọi đệ quy hàm \texttt{branchAndBound} với \texttt{currentCost} mới, \texttt{level} tăng thêm 1 và \texttt{bound} mới.
+
+        \item \texttt{currentCost -= graph[currentPath[level - 1]][i];} \\ 
+        Khôi phục lại \texttt{currentCost} về trạng thái trước đó.
+
+        \item \texttt{bound = tempBound;} \\ 
+        Khôi phục lại \texttt{bound} về trạng thái trước đó.
+
+        \item \texttt{visited[i] = false;} \\ 
+        Bỏ đánh dấu đỉnh mới là đã thăm.
+    \end{itemize}
+\end{itemize}
+\item \textit{Sử dụng}
+\begin{itemize}
+    \item Thực hiện thuật toán Branch and Bound để tìm lộ trình tối ưu.
+    \item Sử dụng đệ quy để khám phá tất cả các lộ trình khả thi và so sánh chúng để tìm lộ trình có chi phí nhỏ nhất.
+    \item Cập nhật \texttt{minCost} và \texttt{bestPath} nếu tìm thấy lộ trình có chi phí nhỏ hơn chi phí tối thiểu hiện tại.
+\end{itemize}
+
+\subsection*{Hàm \texttt{solve(char startVertex)}}
+\begin{lstlisting}[style=cppstyle]
+string solve(char startVertex) {
+    currentPath[0] = startVertex - 'A';
+    visited[startVertex - 'A'] = true;
+
+    int initialBound = calculateBound(1);
+    branchAndBound(0, 1, initialBound);
+
+    ostringstream result;
+    for (int i = 0; i < numVertices; ++i) {
+        result << char(bestPath[i] + 'A') << " ";
+    }
+    result << char(bestPath[0] + 'A');
+    return result.str();
+}
+\end{lstlisting}
+\item \textit{Cấu Trúc và giải thích từng dòng mã}
+\begin{itemize}
+    \item Hàm \texttt{solve} được sử dụng để tìm đường đi ngắn nhất trong bài toán Người du lịch (TSP) bằng cách khởi động quá trình Branch and Bound từ đỉnh bắt đầu được chỉ định. Hàm này thiết lập trạng thái ban đầu và gọi hàm đệ quy \texttt{branchAndBound} để thực hiện tìm kiếm.
+\end{itemize}
+
+\begin{itemize}
+    \item \textbf{Đầu vào:}
+    \begin{itemize}
+        \item \texttt{startVertex}: Ký tự đại diện cho đỉnh bắt đầu của hành trình.
+    \end{itemize}
+
+    \item \textbf{Đầu ra:}
+    \begin{itemize}
+        \item Chuỗi ký tự đại diện cho đường đi ngắn nhất bắt đầu và kết thúc tại \texttt{startVertex}.
+    \end{itemize}
+
+    \item \textbf{Cách thức hoạt động:}
+    \begin{itemize}
+        \item Đặt đỉnh đầu tiên của \texttt{currentPath} là \texttt{startVertex} và đánh dấu nó đã được thăm.
+        
+        \item Tính cận dưới ban đầu sử dụng hàm \texttt{calculateBound}.
+        
+        \item Bắt đầu quá trình tìm kiếm bằng phương pháp Branch and Bound từ đỉnh đầu tiên.
+        
+        \item Khởi tạo một đối tượng \texttt{ostringstream} để lưu trữ kết quả đường đi ngắn nhất.
+        
+        \item Duyệt qua tất cả các đỉnh trong \texttt{bestPath} và thêm chúng vào kết quả dưới dạng ký tự.
+        
+        \item Thêm đỉnh bắt đầu vào cuối chuỗi kết quả để hoàn thành chu trình.
+        
+        \item Trả về chuỗi kết quả dưới dạng đường đi ngắn nhất.
+        
+    \end{itemize}
+\end{itemize}
+
+\begin{itemize}
+    \item \textbf{Giải thích từng dòng mã:}
+    \begin{itemize}
+        \item \texttt{currentPath[0] = startVertex - 'A';} \\ 
+        Đặt đỉnh đầu tiên của \texttt{currentPath} là chỉ số của \texttt{startVertex} trong bảng chữ cái. Ví dụ, nếu \texttt{startVertex} là 'A', thì chỉ số là 0.
+
+        \item \texttt{visited[startVertex - 'A'] = true;} \\ 
+        Đánh dấu đỉnh bắt đầu là đã được thăm.
+
+        \item \texttt{int initialBound = calculateBound(1);} \\ 
+        Tính toán cận dưới ban đầu của chi phí hành trình từ đỉnh đầu tiên.
+
+        \item \texttt{branchAndBound(0, 1, initialBound);} \\ 
+        Bắt đầu quá trình tìm kiếm bằng phương pháp Branch and Bound với chi phí hiện tại là 0, mức độ là 1, và cận dưới ban đầu là \texttt{initialBound}.
+
+        \item \texttt{ostringstream result;} \\ 
+        Khởi tạo một đối tượng \texttt{ostringstream} để lưu trữ kết quả.
+
+        \item \texttt{for (int i = 0; i < numVertices; ++i) \{\\
+        \quad result << char(bestPath[i] + 'A') << " ";\\
+        \}} \\ 
+        Duyệt qua tất cả các đỉnh trong \texttt{bestPath}, chuyển đổi chúng thành ký tự và thêm vào chuỗi kết quả.
+
+        \item \texttt{result << char(bestPath[0] + 'A');} \\ 
+        Thêm đỉnh bắt đầu vào cuối chuỗi kết quả để hoàn thành chu trình.
+
+        \item \texttt{return result.str();} \\ 
+        Trả về chuỗi kết quả dưới dạng đường đi ngắn nhất.
+    \end{itemize}
+\end{itemize}
+     \item \textbf{Sử dụng}:
+    \begin{itemize}
+        \item Khởi tạo lộ trình và trạng thái ban đầu.
+        \item Gọi hàm \texttt{branchAndBound} để tìm lộ trình tối ưu.
+        \item Trả về lộ trình tốt nhất dưới dạng chuỗi ký tự.
+    \end{itemize}
+
+
+\subsection*{Hàm \texttt{Traveling(int graph[20][20], int numVertices, char startVertex)}}
+\begin{lstlisting}[style=cppstyle]
+string Traveling(int graph[20][20], int numVertices, char startVertex) {
+    TSP tsp(graph, numVertices);
+    return tsp.solve(startVertex);
+}
+\end{lstlisting}
+
+
+\item \textit{Cấu Trúc và giải thích từng dòng mã}:
+\begin{itemize}
+\texttt{string Traveling(int graph[20][20], int numVertices, char startVertex)}:
+\end{itemize}
+\begin{itemize}
+    \item \textbf{Đầu vào}: Hàm nhận đầu vào là một ma trận hai chiều \texttt{graph}, số lượng đỉnh trong đồ thị \texttt{numVertices}, và đỉnh xuất phát \texttt{startVertex}.
+    \item \textbf{Đầu ra}: Trả về một chuỗi đại diện cho lộ trình ngắn nhất qua tất cả các đỉnh trong đồ thị, bắt đầu từ \texttt{startVertex}.
+    \item \textbf{Cách thức hoạt động}:
+    \begin{itemize}
+        \item Tạo một đối tượng \texttt{TSP} với ma trận chi phí \texttt{graph} và số lượng đỉnh \texttt{numVertices}.
+        \item Gọi phương thức \texttt{solve} trên đối tượng \texttt{tsp}, truyền \texttt{startVertex} vào để tìm kiếm lộ trình ngắn nhất.
+        \item Trả về chuỗi đại diện cho lộ trình ngắn nhất được tìm thấy.
+    \end{itemize}
+\end{itemize}
+\begin{itemize}
+\item \textbf{Giải thích từng dòng mã:}
+\begin{itemize}
+    \item \texttt{TSP tsp(graph, numVertices);}: Tạo một đối tượng \texttt{TSP} với ma trận chi phí \texttt{graph} và số lượng đỉnh \texttt{numVertices}. Đây là đối tượng được sử dụng để thực hiện thuật toán giải quyết bài toán TSP.
+    \item \texttt{return tsp.solve(startVertex);}: Gọi phương thức \texttt{solve} trên đối tượng \texttt{tsp}, truyền \texttt{startVertex} vào. Phương thức này sẽ trả về chuỗi đại diện cho lộ trình ngắn nhất qua tất cả các đỉnh trong đồ thị, bắt đầu từ \texttt{startVertex}.
+\end{itemize}
+\end{itemize}
+    \item \textit{Sử dụng}:
+    \begin{itemize}
+        \item Tạo đối tượng \texttt{TSP} và giải quyết bài toán người bán hàng.
+        \item Gọi hàm \texttt{solve} để tìm lộ trình tối ưu và trả về kết quả.
+    \end{itemize}
+\end{itemize}
+
+% \subsection{Các thư viện sử dụng: }\label{control}
+
+% \begin{lstlisting}[style=cppstyle]
+% #include <iostream>
+% #include <vector>
+% #include <climits>
+% #include <algorithm>
+% #include <string>
+% #include <sstream>
+% \end{lstlisting}
+% \begin{itemize}
+% \item \texttt{Thư viện}:
+% \begin{itemize}
+%     \item \texttt{\#include <iostream>}: Thư viện nhập và xuất dữ liệu chuẩn của C++.
+%     \item \texttt{\#include <vector>}: Thư viện cho việc sử dụng cấu trúc dữ liệu vector.
+%     \item \texttt{\#include <climits>}: Thư viện chứa các hằng số và giới hạn liên quan đến kiểu dữ liệu nguyên của C++.
+%     \item \texttt{\#include <algorithm>}: Thư viện chứa các thuật toán thường dùng trong C++, như sắp xếp và tìm kiếm.
+%     \item \texttt{\#include <string>}: Thư viện cho việc sử dụng chuỗi ký tự trong C++.
+%     \item \texttt{\#include <sstream>}: Thư viện cho việc xử lý chuỗi ký tự chứa dữ liệu số.
+% \end{itemize}
+% \end{itemize}
+\newpage
+\section{Lời cảm ơn: }
+Em xin chân thành cảm ơn Thầy Mai Xuân Toàn đã hỗ trợ và hướng dẫn em trong quá trình học về Traveling Salesman Problem (TSP). Nhờ sự chỉ bảo của Thầy, em đã có cơ hội hiểu sâu hơn về vấn đề này và phát triển kỹ năng giải quyết vấn đề. Và bên cạnh đó giúp em có được nhiều kỹ năng hơn trong tìm hiểu các giải thuật và kiến thức để ứng dụng trong tương lai.
+
+\newpage
+\section{Tài liệu tham khảo: }
+\bibliographystyle{unsrt}
+\bibliography{bibtex/references}
+\end{document}
+
+
+
+
+
